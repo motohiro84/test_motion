@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
     public GameObject Player;
     public GameObject Camera;
-    public float speed = 3;
+    public float speed;
     private Vector3 playerPos;
     private Transform PlayerTransform;
     private Transform CameraTransform;
@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour {
         playerPos = GameObject.Find("Player").transform.position;
         animator = GameObject.Find("Player").GetComponent<Animator>();
         CameraTransform = GameObject.Find("camera").GetComponent<Transform>();
+        CameraTransform.transform.Rotate(360f, 0, 0);
  
     }
 	
@@ -34,52 +35,23 @@ public class PlayerController : MonoBehaviour {
         float X_Rotation = Input.GetAxis("Mouse X");
         float Y_Rotation = Input.GetAxis("Mouse Y");
         PlayerTransform.transform.Rotate(0, X_Rotation, 0);
-        
-        ii = Camera.transform.localEulerAngles.x;
-        if (ii > 334 && ii < 360 || ii > 0 && 20 > ii)
+
+        //オイラー角と、マウスの変化量を足したものをラジアンに変換
+        ii = (Camera.transform.localEulerAngles.x - Y_Rotation) * Mathf.Deg2Rad;
+        //sin関数で-1~1の範囲に変換
+        ii = Mathf.Sin(ii);
+
+        //角度の制限をつけてやる
+        if (ii > -0.6f && ii < 0.2f)
         {
             CameraTransform.transform.Rotate(-Y_Rotation, 0, 0);
-            float kk = Y_Rotation;
-        }
-        else
-        {
-           
-            if (ii > 300)
-            {
- 
-                if (Input.GetAxis("Mouse Y") < 0)
-                {
- 
-                    CameraTransform.transform.Rotate(-Y_Rotation, 0, 0);
- 
-                }
-            }
-            else
-            {
-                if (Input.GetAxis("Mouse Y") > 0)
-                {
- 
-                    CameraTransform.transform.Rotate(-Y_Rotation, 0, 0);
- 
-                }
- 
-            }
+            //float kk = Y_Rotation;
         }
 
-        // GetInputKey();
         ChangeState();
         ChangeAnimation();
         Move();
     }
-
-    // void GetInputKey()
-    // {
-    //     float x = Input.GetAxisRaw("Horizontal") * Time.deltaTime * speed;
- 
-    //     float z = Input.GetAxisRaw("Vertical") * Time.deltaTime * speed;
- 
-    //     key = true;
-    // }
 
         void ChangeState()
     {
@@ -87,7 +59,14 @@ public class PlayerController : MonoBehaviour {
         {
             if (key == true)
             {
-                state = "WALK";
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    state = "RUN";
+                }
+                else
+                {
+                    state = "WALK";
+                }
             }
             else
             {
@@ -109,16 +88,25 @@ public class PlayerController : MonoBehaviour {
                 case "JUMP":
                     animator.SetBool("Jump", true);
                     animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
                     animator.SetBool("Idle", false);
                     break;
                 case "WALK":
                     animator.SetBool("Jump", false);
                     animator.SetBool("Walk", true);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("Idle", false);
+                    break;
+                case "RUN":
+                    animator.SetBool("Jump", false);
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", true);
                     animator.SetBool("Idle", false);
                     break;
                 default:
                     animator.SetBool("Jump", false);
                     animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
                     animator.SetBool("Idle", true);
                     break;
             }
@@ -146,6 +134,8 @@ public class PlayerController : MonoBehaviour {
 
         if ( Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) )
         {
+            PlaySpeed();
+
             if (Input.GetKey(KeyCode.W))
             {
                 PlayerTransform.transform.position += dir1 * speed * Time.deltaTime;
@@ -169,6 +159,22 @@ public class PlayerController : MonoBehaviour {
             key = false;
         }
  
+    }
+
+    void PlaySpeed()
+    {
+        if (state == "WALK")
+        {
+            speed = 2;
+        }
+        else if (state == "RUN")
+        {
+            speed = 4;
+        }
+        else
+        {
+            
+        }
     }
 
     void OnTriggerEnter(Collider col)
