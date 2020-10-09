@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour {
     private float ii;
     private Animator animator;
     private Rigidbody rb;
-    private float jumpForce = 400.0f;
+    private float jumpForce = 300.0f;
     private bool Ground = true;
     private bool key = false;
 
