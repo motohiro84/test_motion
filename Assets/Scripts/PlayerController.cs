@@ -86,25 +86,25 @@ public class PlayerController : MonoBehaviour {
             switch (state)
             {
                 case "JUMP":
-                    animator.SetBool("Jump", true);
+                    // animator.SetBool("Jump", true);
+                    animator.SetTrigger("Jump");
                     animator.SetBool("Walk", false);
                     animator.SetBool("Run", false);
-                    animator.SetBool("Idle", false);
+                    // animator.SetBool("Idle", false);
                     break;
                 case "WALK":
-                    animator.SetBool("Jump", false);
+                    // animator.SetBool("Jump", false);
                     animator.SetBool("Walk", true);
                     animator.SetBool("Run", false);
                     animator.SetBool("Idle", false);
                     break;
                 case "RUN":
-                    animator.SetBool("Jump", false);
+                    // animator.SetBool("Jump", false);
                     animator.SetBool("Walk", false);
                     animator.SetBool("Run", true);
                     animator.SetBool("Idle", false);
                     break;
                 default:
-                    animator.SetBool("Jump", false);
                     animator.SetBool("Walk", false);
                     animator.SetBool("Run", false);
                     animator.SetBool("Idle", true);
@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (Ground == true)
         {
-            if (Input.GetButton("Jump"))
+            if (Input.GetButtonDown("Jump"))
             {
                 rb.AddForce(transform.up * jumpForce);
                 Ground = false;
