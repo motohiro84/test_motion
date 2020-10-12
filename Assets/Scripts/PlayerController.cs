@@ -77,6 +77,10 @@ public class PlayerController : MonoBehaviour {
         {
             state = "JUMP";
         }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            state = "SPRINT";
+        }
     }
 
         void ChangeAnimation()
@@ -86,20 +90,21 @@ public class PlayerController : MonoBehaviour {
             switch (state)
             {
                 case "JUMP":
-                    // animator.SetBool("Jump", true);
                     animator.SetTrigger("Jump");
                     animator.SetBool("Walk", false);
                     animator.SetBool("Run", false);
-                    // animator.SetBool("Idle", false);
+                    break;
+                case "SPRINT":
+                    animator.SetTrigger("Sprint");
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Run", false);
                     break;
                 case "WALK":
-                    // animator.SetBool("Jump", false);
                     animator.SetBool("Walk", true);
                     animator.SetBool("Run", false);
                     animator.SetBool("Idle", false);
                     break;
                 case "RUN":
-                    // animator.SetBool("Jump", false);
                     animator.SetBool("Walk", false);
                     animator.SetBool("Run", true);
                     animator.SetBool("Idle", false);
@@ -171,9 +176,9 @@ public class PlayerController : MonoBehaviour {
         {
             speed = 4;
         }
-        else
+        else if (state == "SPRINT")
         {
-            
+            speed = 400;
         }
     }
 
