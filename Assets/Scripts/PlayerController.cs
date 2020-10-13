@@ -132,6 +132,19 @@ public class PlayerController : MonoBehaviour {
         }
  
 
+        // float x = Input.GetAxisRaw("Horizontal");
+        // float z = Input.GetAxisRaw("Vertical");
+
+        // if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        // {
+        //     PlaySpeed();
+        //     PlayerTransform.transform.position += new Vector3(x, 0 , z) * speed * Time.deltaTime;
+        //     key = true;
+        // }
+        // else
+        // {
+        //     key = false;
+        // }
 
         float angleDir = PlayerTransform.transform.eulerAngles.y * (Mathf.PI / 180.0f);
         Vector3 dir1 = new Vector3(Mathf.Sin(angleDir), 0, Mathf.Cos(angleDir));
