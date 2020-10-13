@@ -168,17 +168,17 @@ public class PlayerController : MonoBehaviour {
 
     void PlaySpeed()
     {
-        if (state == "WALK")
-        {
-            speed = 2;
-        }
-        else if (state == "RUN")
+        if (state == "RUN")
         {
             speed = 4;
         }
         else if (state == "SPRINT")
         {
             speed = 400;
+        }
+        else
+        {
+            speed = 2;
         }
     }
 
