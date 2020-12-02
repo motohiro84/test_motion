@@ -10,7 +10,6 @@ public class AttackChara : MonoBehaviour
     Key = false;
   }
 
-
   void OnTriggerEnter(Collider other)
   {
     if (other.CompareTag("Player"))

@@ -17,7 +17,7 @@ public class JumpChara : MonoBehaviour
     bossController = Boss.GetComponent<BossController>();
   }
 
-  void OnTriggerStay(Collider other)
+  void OnTriggerEnter(Collider other)
   {
     if (!BossController.jumpKey && !AttackChara.Key && Key)
     {
@@ -32,6 +32,7 @@ public class JumpChara : MonoBehaviour
       }
     }
   }
+
 
   void JumpCool()
   {

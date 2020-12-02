@@ -8024,6 +8024,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveEnabled: 1
   maxHp: 20
+  AttackArea: {fileID: 494254801}
   targetTag: Player
   attacking: 0
 --- !u!114 &803260324101473412
