@@ -24,20 +24,24 @@ public class BossMotion : MonoBehaviour
     animStateInfo = animator.GetCurrentAnimatorStateInfo(0);
     if (animStateInfo.fullPathHash == Animator.StringToHash("Base Layer.Attack" + BossController.attackNum))
     {
-      if (animStateInfo.normalizedTime > 1.0f)
+      if (animStateInfo.normalizedTime >= 1.0f)
       {
         bossController.AttackTime();
       }
     }
     if (animStateInfo.fullPathHash == Animator.StringToHash("Base Layer.JumpEnd"))
     {
-      if (animStateInfo.normalizedTime > 1.0f)
+      if (animStateInfo.normalizedTime >= 1.0f)
       {
         BossController.jumpKey = false;
+        bossController.moveEnabled = true;
+      }
+      else
+      {
+        bossController.moveEnabled = false;
       }
     }
   }
-
   void Animation()
   {
     if (prevState != state)

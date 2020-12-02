@@ -11,11 +11,15 @@ public class JumpEnd : MonoBehaviour
   {
     bossMotion = Boss.GetComponent<BossMotion>();
   }
-  void OnTriggerExit(Collider other)
+
+  void OnTriggerEnter(Collider other)
   {
-    if (other.CompareTag("Ground"))
+    if (BossController.jumpKey)
     {
-      bossMotion.JumpEndMotion();
+      if (other.CompareTag("Ground"))
+      {
+        bossMotion.JumpEndMotion();
+      }
     }
   }
 }

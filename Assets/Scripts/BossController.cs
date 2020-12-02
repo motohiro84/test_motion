@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(NavMeshAgent))]
 
 public class BossController : MonoBehaviour
 {
@@ -20,15 +18,18 @@ public class BossController : MonoBehaviour
   // float deadTime = 3;
   bool attacking = false;
   int hp;
-  float moveSpeed;
+  float moveSpeed = 2f;
   Animator animator;
   Rigidbody rigidBody;
-  NavMeshAgent agent;
   Transform target;
   BossMotion bossMotion;
   AnimatorStateInfo animStateInfo;
   public static bool jumpKey;
-  private float jumpForce = 3000.0f;
+  private float jumpForce = 1000.0f;
+
+  private Vector3 destination;
+  private Vector3 velocity;
+  private Vector3 direction;
 
 
   public int Hp
@@ -53,7 +54,6 @@ public class BossController : MonoBehaviour
     jumpKey = false;
     animator = GetComponent<Animator>();
     rigidBody = this.gameObject.GetComponent<Rigidbody>();
-    agent = GetComponent<NavMeshAgent>();
     bossMotion = this.gameObject.GetComponent<BossMotion>();
     target = GameObject.FindGameObjectWithTag(targetTag).transform;
     InitCharacter();
@@ -61,58 +61,70 @@ public class BossController : MonoBehaviour
 
   void Update()
   {
+    destination = target.position;
     if (moveEnabled)
     {
-      if (!jumpKey)
-      {
-        Move();
-      }
-      else
-      {
-        JumpMove();
-      }
+      Move();
     }
     else
     {
       Stop();
     }
 
+    if (jumpKey && AttackChara.Key)
+    {
+      AttackChara.Key = false;
+    }
     if (!jumpKey)
     {
       if (AttackChara.Key && !attacking)
       {
-        attackNum = Random.Range(1, 4).ToString();
         Attack();
-      }
-      if (AttackChara.Key)
-      {
-        AttackTime();
       }
     }
 
   }
 
-
   void InitCharacter()
   {
     Hp = maxHp;
-    moveSpeed = agent.speed;
   }
 
   public void Jump()
   {
     rigidBody.AddForce(transform.up * jumpForce);
-    jumpKey = true;
   }
 
-  void JumpMove()
+
+  void Move()
   {
-    agent.speed = moveSpeed * 2;
-    agent.SetDestination(target.position);
+    direction = (destination - transform.position).normalized;
+    transform.LookAt(new Vector3(destination.x, transform.position.y, destination.z));
+    if (jumpKey)
+    {
+      velocity = direction * moveSpeed * 5f;
+    }
+    else if (ChaseChara.Key)
+    {
+      velocity = direction * moveSpeed * 3f;
+      bossMotion.RunMotion();
+    }
+    else
+    {
+      velocity = direction * moveSpeed;
+      bossMotion.WalkMotion();
+    }
+    this.transform.position += velocity * Time.deltaTime;
+  }
+  void Stop()
+  {
+    direction = (destination - transform.position).normalized;
+    transform.LookAt(new Vector3(destination.x, transform.position.y, destination.z));
   }
 
   void Attack()
   {
+    attackNum = Random.Range(1, 4).ToString();
     attacking = true;
     moveEnabled = false;
     bossMotion.AttackMotion();
@@ -124,25 +136,5 @@ public class BossController : MonoBehaviour
     moveEnabled = true;
     AttackChara.Key = false;
   }
-
-  void Move()
-  {
-    if (ChaseChara.Key)
-    {
-      agent.speed = moveSpeed * 2;
-      bossMotion.RunMotion();
-    }
-    else
-    {
-      agent.speed = moveSpeed;
-      bossMotion.WalkMotion();
-    }
-    agent.SetDestination(target.position);
-  }
-  void Stop()
-  {
-    agent.speed = 0;
-  }
-
 
 }

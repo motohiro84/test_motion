@@ -7,20 +7,35 @@ public class JumpChara : MonoBehaviour
   public GameObject Boss;
   BossMotion bossMotion;
   BossController bossController;
+  bool Key;
+  float coolTime;
 
   void Start()
   {
+    Key = true;
     bossMotion = Boss.GetComponent<BossMotion>();
     bossController = Boss.GetComponent<BossController>();
   }
 
-  void OnTriggerEnter(Collider other)
+  void OnTriggerStay(Collider other)
   {
-    if (other.gameObject.tag == "Player")
+    if (!BossController.jumpKey && !AttackChara.Key && Key)
     {
-      bossController.Jump();
-      bossMotion.JumpMotion();
+      if (other.CompareTag("Player"))
+      {
+        Key = false;
+        BossController.jumpKey = true;
+        bossController.Jump();
+        bossMotion.JumpMotion();
+        coolTime = Random.Range(10f, 20f);
+        Invoke("JumpCool", coolTime);
+      }
     }
+  }
+
+  void JumpCool()
+  {
+    Key = true;
   }
 
 }
