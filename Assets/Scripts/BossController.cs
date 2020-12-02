@@ -27,6 +27,9 @@ public class BossController : MonoBehaviour
   Transform target;
   BossMotion bossMotion;
   AnimatorStateInfo animStateInfo;
+  public static bool jumpKey;
+  private float jumpForce = 3000.0f;
+
 
   public int Hp
   {
@@ -47,8 +50,9 @@ public class BossController : MonoBehaviour
 
   void Start()
   {
+    jumpKey = false;
     animator = GetComponent<Animator>();
-    rigidBody = GetComponent<Rigidbody>();
+    rigidBody = this.gameObject.GetComponent<Rigidbody>();
     agent = GetComponent<NavMeshAgent>();
     bossMotion = this.gameObject.GetComponent<BossMotion>();
     target = GameObject.FindGameObjectWithTag(targetTag).transform;
@@ -59,31 +63,33 @@ public class BossController : MonoBehaviour
   {
     if (moveEnabled)
     {
-      Move();
+      if (!jumpKey)
+      {
+        Move();
+      }
+      else
+      {
+        JumpMove();
+      }
     }
     else
     {
       Stop();
     }
 
-
-    if (AttackChara.Key && !attacking)
+    if (!jumpKey)
     {
-      attackNum = Random.Range(1, 4).ToString();
-      Attack();
-    }
-
-    animStateInfo = animator.GetCurrentAnimatorStateInfo(0);
-    if (animStateInfo.fullPathHash == Animator.StringToHash("Base Layer.Attack" + attackNum))
-    {
-      if (animStateInfo.normalizedTime > 1.0f)
+      if (AttackChara.Key && !attacking)
       {
-        attacking = false;
-        moveEnabled = true;
-        AttackChara.Key = false;
-        Debug.Log("1");
+        attackNum = Random.Range(1, 4).ToString();
+        Attack();
+      }
+      if (AttackChara.Key)
+      {
+        AttackTime();
       }
     }
+
   }
 
 
@@ -93,11 +99,30 @@ public class BossController : MonoBehaviour
     moveSpeed = agent.speed;
   }
 
+  public void Jump()
+  {
+    rigidBody.AddForce(transform.up * jumpForce);
+    jumpKey = true;
+  }
+
+  void JumpMove()
+  {
+    agent.speed = moveSpeed * 2;
+    agent.SetDestination(target.position);
+  }
+
   void Attack()
   {
     attacking = true;
     moveEnabled = false;
     bossMotion.AttackMotion();
+  }
+
+  public void AttackTime()
+  {
+    attacking = false;
+    moveEnabled = true;
+    AttackChara.Key = false;
   }
 
   void Move()
@@ -113,7 +138,6 @@ public class BossController : MonoBehaviour
       bossMotion.WalkMotion();
     }
     agent.SetDestination(target.position);
-    rigidBody.velocity = agent.desiredVelocity;
   }
   void Stop()
   {
