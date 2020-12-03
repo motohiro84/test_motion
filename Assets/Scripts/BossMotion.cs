@@ -9,16 +9,16 @@ public class BossMotion : MonoBehaviour
   public static string state;
   string prevState;
   public GameObject Boss;
+  public GameObject JumpAttack;
   BossController bossController;
   AnimatorStateInfo animStateInfo;
-  SphereCollider SphereCollider;
 
   void Start()
   {
+    JumpAttack.SetActive(false);
     bossController = Boss.GetComponent<BossController>();
     animator = this.gameObject.GetComponent<Animator>();
     state = "Walk";
-    SphereCollider = bossController.AttackArea.GetComponent<SphereCollider>();
   }
 
   void Update()
@@ -30,15 +30,22 @@ public class BossMotion : MonoBehaviour
       {
         bossController.AttackTime();
       }
-      Debug.Log("Base Layer.Attack" + BossController.attackNum);
     }
     if (animStateInfo.fullPathHash == Animator.StringToHash("Base Layer.JumpEnd"))
     {
       bossController.moveEnabled = false;
       if (animStateInfo.normalizedTime >= 1.0f)
       {
+        JumpAttack.SetActive(false);
         BossController.jumpKey = false;
         bossController.moveEnabled = true;
+      }
+    }
+    if (animStateInfo.fullPathHash == Animator.StringToHash("Base Layer.Jump"))
+    {
+      if (animStateInfo.normalizedTime >= 1.0f)
+      {
+        JumpAttack.SetActive(true);
       }
     }
   }
@@ -47,7 +54,7 @@ public class BossMotion : MonoBehaviour
   {
     if (prevState != state)
     {
-      animator.CrossFade(state, 0.2f);
+      animator.CrossFadeInFixedTime(state, 0.2f);
     }
   }
   public void WalkMotion()

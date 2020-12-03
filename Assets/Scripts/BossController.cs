@@ -11,7 +11,7 @@ public class BossController : MonoBehaviour
   public static string attackNum;
 
   public int maxHp = 20;
-  public GameObject AttackArea;
+  public GameObject Player;
 
   [SerializeField]
   string targetTag = "Player";
@@ -31,6 +31,7 @@ public class BossController : MonoBehaviour
   private Vector3 destination;
   private Vector3 velocity;
   private Vector3 direction;
+  public float forcePower;
 
 
   public int Hp
@@ -71,10 +72,10 @@ public class BossController : MonoBehaviour
       Stop();
     }
 
-    if (BossMotion.state != "Attack1" && BossMotion.state != "Attack2" && BossMotion.state != "Attack3" && attacking)
-    {
-      attacking = false;
-    }
+    // if (BossMotion.state != "Attack1" && BossMotion.state != "Attack2" && BossMotion.state != "Attack3" && attacking)
+    // {
+    //   attacking = false;
+    // }
     if (BossMotion.state == "Run")
     {
       if (AttackChara.Key && !attacking)
@@ -88,10 +89,9 @@ public class BossController : MonoBehaviour
   {
     Hp = maxHp;
   }
-
   public void Jump()
   {
-    rigidBody.AddForce(transform.up * jumpForce);
+    rigidBody.AddForce(transform.up * jumpForce, ForceMode.Acceleration);
   }
 
   void Move()
