@@ -39,6 +39,7 @@ public class BossMotion : MonoBehaviour
         JumpAttack.SetActive(false);
         BossController.jumpKey = false;
         bossController.moveEnabled = true;
+        RunMotion();
       }
     }
     if (animStateInfo.fullPathHash == Animator.StringToHash("Base Layer.Jump"))

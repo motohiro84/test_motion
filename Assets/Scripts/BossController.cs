@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
+  public static GameObject[] AttackSphere;
+
   public bool moveEnabled = true;
   public static string attackNum;
 
@@ -52,11 +54,13 @@ public class BossController : MonoBehaviour
 
   void Start()
   {
+    AttackSphere = GameObject.FindGameObjectsWithTag("Attack");
     jumpKey = false;
     animator = GetComponent<Animator>();
     rigidBody = this.gameObject.GetComponent<Rigidbody>();
     bossMotion = this.gameObject.GetComponent<BossMotion>();
     target = GameObject.FindGameObjectWithTag(targetTag).transform;
+    AttackMode(false);
     InitCharacter();
   }
 
@@ -72,16 +76,18 @@ public class BossController : MonoBehaviour
       Stop();
     }
 
-    // if (BossMotion.state != "Attack1" && BossMotion.state != "Attack2" && BossMotion.state != "Attack3" && attacking)
-    // {
-    //   attacking = false;
-    // }
     if (BossMotion.state == "Run")
     {
       if (AttackChara.Key && !attacking)
       {
+        Debug.Log("1");
         Attack();
       }
+      // if (AttackChara.Key && attacking)
+      // {
+      //   AttackChara.Key = false;
+      //   attacking = false;
+      // }
     }
   }
 
@@ -125,6 +131,7 @@ public class BossController : MonoBehaviour
     attackNum = Random.Range(1, 4).ToString();
     attacking = true;
     moveEnabled = false;
+    AttackMode(true);
     bossMotion.AttackMotion();
   }
 
@@ -133,6 +140,15 @@ public class BossController : MonoBehaviour
     attacking = false;
     moveEnabled = true;
     AttackChara.Key = false;
+    AttackMode(false);
+  }
+
+  void AttackMode(bool i)
+  {
+    foreach (GameObject g in AttackSphere)
+    {
+      g.SetActive(i);
+    }
   }
 
 }

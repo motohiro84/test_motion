@@ -37,9 +37,7 @@ public class JumpEnd : MonoBehaviour
   Vector3 GetAngleVec(GameObject _from, GameObject _to)
   {
     Vector3 fromVec = new Vector3(_from.transform.position.x, 0, _from.transform.position.z);
-    Vector3 toVec = new Vector3(_to.transform.position.x, 0, _to.transform.position.z);
-
+    Vector3 toVec = new Vector3(_to.transform.position.x, 0.03f, _to.transform.position.z);
     return Vector3.Normalize(toVec - fromVec);
   }
-
 }
