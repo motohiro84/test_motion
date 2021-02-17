@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SoftGear.Strix.Unity.Runtime;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : StrixBehaviour
 {
   public GameObject Player;
   public GameObject Camera;
@@ -35,22 +36,8 @@ public class PlayerController : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    float X_Rotation = Input.GetAxis("Mouse X");
-    float Y_Rotation = Input.GetAxis("Mouse Y");
-    PlayerTransform.transform.Rotate(0, X_Rotation, 0);
 
-    //オイラー角と、マウスの変化量を足したものをラジアンに変換
-    ii = (Camera.transform.localEulerAngles.x - Y_Rotation) * Mathf.Deg2Rad;
-    //sin関数で-1~1の範囲に変換
-    ii = Mathf.Sin(ii);
-
-    //角度の制限をつけてやる
-    if (ii > -0.6f && ii < 0.2f)
-    {
-      CameraTransform.transform.Rotate(-Y_Rotation, 0, 0);
-      //float kk = Y_Rotation;
-    }
-
+    TPS();
     ChangeState();
     ChangeAnimation();
     Move();
@@ -124,9 +111,35 @@ public class PlayerController : MonoBehaviour
       prevState = state;
     }
   }
+  void TPS()
+  {
+    if (isLocal == false)
+    {
+      return;
+    }
+    float X_Rotation = Input.GetAxis("Mouse X");
+    float Y_Rotation = Input.GetAxis("Mouse Y");
+    PlayerTransform.transform.Rotate(0, X_Rotation, 0);
+
+    //オイラー角と、マウスの変化量を足したものをラジアンに変換
+    ii = (Camera.transform.localEulerAngles.x - Y_Rotation) * Mathf.Deg2Rad;
+    //sin関数で-1~1の範囲に変換
+    ii = Mathf.Sin(ii);
+
+    //角度の制限をつけてやる
+    if (ii > -0.6f && ii < 0.2f)
+    {
+      CameraTransform.transform.Rotate(-Y_Rotation, 0, 0);
+      //float kk = Y_Rotation;
+    }
+  }
 
   void Move()
   {
+    if (isLocal == false)
+    {
+      return;
+    }
     if (Ground == true)
     {
       if (Input.GetButtonDown("Jump"))
