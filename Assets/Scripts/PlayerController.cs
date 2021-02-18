@@ -138,6 +138,7 @@ public class PlayerController : StrixBehaviour
   {
     if (isLocal == false)
     {
+      Camera.SetActive(false);
       return;
     }
     if (Ground == true)
